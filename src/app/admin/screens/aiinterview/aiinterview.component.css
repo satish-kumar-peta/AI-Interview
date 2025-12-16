@@ -1,0 +1,197 @@
+body {
+  background: #fff;
+  margin: 0;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+h3 {
+  font-family: 'Inter' !important;
+}
+
+.wrapper {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  padding: 30px;
+  justify-content: center;
+  height: 90vh;
+}
+
+.box {
+
+  padding: 30px;
+  text-align: center;
+  border-radius: 1.5rem;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* row-gap: 30px; */
+  padding-top: 50px;
+  padding-bottom: 50px;
+  box-shadow:
+    0px 0px 18px rgba(255, 255, 255, 0.05),
+    0px 20px 40px rgba(0, 0, 0, 0.20);
+  background: radial-gradient(circle at center,
+      rgba(88, 110, 143, 1) 0%,
+      rgba(70, 90, 120, 1) 35%,
+      rgba(55, 70, 100, 1) 70%,
+      rgba(40, 55, 85, 1) 100%);
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn {
+  background: #253554;
+  color: #E9F1FF;
+  padding: 10px 28px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 0px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.20);
+  transition: 0.25s ease;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.btn:hover {
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: #0f182e;
+  /* very soft blue */
+}
+
+
+.box h3 {
+  margin: 0 !important;
+  font-size: 25px;
+  margin-top: 20px;
+}
+
+
+@media (max-width:1024px) {
+  .box {
+    width: 50%;
+  }
+
+  .wrapper {
+    gap: 30px;
+  }
+}
+
+@media (max-width:600px) {
+
+  .wrapper {
+    gap: 30px;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .box {
+    width: calc(100vw - 60px);
+    justify-content: inherit;
+    padding: 25px 0;
+  }
+
+  .wrapper {
+
+    padding-bottom: 60px;
+  }
+
+  .box h3 {
+    font-size: 20px;
+  }
+
+}
+
+body,
+button {
+  font-family: "Inter";
+  font-size: 16px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600 !important;
+}
+
+h3 {
+  /* font-weight: 700 !important; */
+  color: white !important;
+}
+
+.complete-card {
+  display: none;
+  text-align: center;
+  margin-top: 40px;
+  color: #ffffff;
+  font-size: 26px;
+}
+
+.speech-box {
+  max-height: 120px;
+  /* limit height so avatar won't move */
+  overflow-y: auto;
+  /* scroll text */
+  margin-top: 10px;
+  padding-right: 5px;
+  /* small padding for scroll bar */
+}
+
+#studentSpeechText {
+  color: white;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+
+}
+
+.avatar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

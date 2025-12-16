@@ -1,0 +1,63 @@
+<main class="body">
+   <div class="container mh-100">
+      <div class="row g-0 bg-white rounded-4 shadow-lg align-content-center mh-100">
+         <div class="col-lg-6 col-md-6 text-right mh-100">
+            <aside class="ms-auto h-100 rounded-start-4 mobile-rounded  gr  p-lg-cstm text-center vcenter-hcenter">
+               <img src="assets/img/studybanner.png" class="whiteStoke rounded-4 shadow-lg" alt="" />
+            </aside>
+         </div>
+         <div class="col-lg-6 col-md-6 align-self-center">
+            <div class="RightBlock row px-3  py-3 ">
+               <div class="loginCntMiddle align-self-center text-center px-xl-5 py-xl-5 p-3">
+                  <aside class="loginBlk">
+                     <div class="loginCntHeader text-center  py-2 mb-5 rounded-3">
+                        <img src="assets/img/logo.png" class="logo">
+                     </div>
+                     <h3 class="text-left mb-3"><strong>Login</strong></h3>
+                     <form novalidate [formGroup]="logdata" (ngSubmit)="onLogin()">
+                        <div class="row g-4">
+                           <div class="col-md-12 col-12 ">
+                              <div class="form-group ">
+                                 <label for="loginmobile">SUC/Mobile Number<span
+                                    class="text-danger font-weight-bold">*</span></label>
+                                 <input type="text" id="loginmobile" name="loginmobile" class="form-control "
+                                    onkeypress="return event.charCode>47 && event.charCode<58" minlength="10" maxlength="10" required autocomplete="off" formControlName="stdMobileNo" (keyup)="clearfunction()"  placeholder="SUC/Mobile">
+                                 <div *ngIf="logdata.controls['stdMobileNo'].invalid && logdata.controls['stdMobileNo'].touched" class="text-danger text-center mt-2 ">
+                                    <div *ngIf="logdata.controls['stdMobileNo'].errors">
+                                       <small>Enter SUC/Mobile of Length 10</small> 
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-12 col-12 ">
+                              <div class="form-group">
+                                 <label for="stdPwd">Enter Password<span
+                                    class="text-danger font-weight-bold">*</span></label>
+                                 <input type="password" id="stdPwd" name="stdPwd" minlength="4" maxlength="4" class="form-control"
+                                    required autocomplete="off" onkeypress="return event.charCode>47 && event.charCode<58" formControlName="stdPwd" placeholder="Enter Password" (keyup)="clearfunction()">
+                                 <div *ngIf="logdata.controls['stdPwd'].invalid && logdata.controls['stdPwd'].touched" class="text-danger text-center mt-2">
+                                    <div *ngIf="logdata.controls['stdPwd'].errors">
+                                       <small>Enter Password of Minimum Length 4</small>
+                                    </div>
+                                 </div>
+                                 <a href="#/forgetpassword" class="mt-4 d-block" style="font-size: 14px; color: #555555; float: right;margin-top: 5px;"> Forgot Password ?
+                                 </a>
+                              </div>
+                           </div>
+                           <h6 class="text-danger text-center" *ngIf="show_log_error!=''" > {{show_log_error}} </h6>
+                           <div class="text-center col-12">
+                           <button type="submit" class="btn btn-primary rounded-pill-OFF shadow btn-block   w-100"
+                              [disabled]="!logdata.valid"  id="login">Login</button> <br>
+                           <a href="#/registration" 
+                              style="font-size: 14px; color: inherit!important;   cursor: pointer;" class="mt-4 d-block  " >
+                           I don't have an account? </a>
+                           </div>
+                        </div>
+                     </form>
+                  </aside>
+               </div>
+            </div>
+         </div> 
+      </div>
+   </div>
+</main>

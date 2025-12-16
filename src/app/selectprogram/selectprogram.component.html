@@ -1,0 +1,80 @@
+<main class="body">
+    <div class="container mh-100">
+       <div class="row g-0 bg-white rounded-4 shadow-lg align-content-center mh-100">
+          <div class="col-xl-6 order-xl-first order-last  col-md-12 text-right mh-100 d-sm-none d-md-block d-none d-sm-block">
+             <aside class="ms-auto h-100 rounded-start-4 mobile-rounded  gr  p-lg-cstm text-center vcenter-hcenter">
+                <img src="assets/img/studybanner.png" class="whiteStoke rounded-4 shadow-lg" alt=""/> 
+             </aside>
+          </div>
+          <div class="col-xl-6  col-md-12 align-self-center">
+             <form class="regoform px-lg-5 py-lg-5 p-3" [formGroup]="registerform" (ngSubmit)="onSubmit()" novalidate> 
+             <div class="loginCntHeader text-center  py-2 mb-5 rounded-3">
+                <img src="assets/img/logo.png" class="logo">
+             </div>
+             <h3 class="text-left mb-3"><strong>Update Account</strong></h3>
+             <div class="row g-4"> 
+                 <div class="col-12">
+                    <div class="form-group">
+                       <label for="quali">Studying <span class="text-danger font-weight-bold">*</span></label>
+                       <select  id="quali" name="quali" class="form-select" required autocomplete="off"  formControlName="quali" (change)="get_quali($event)">
+                          <option value=""> Select </option>
+                          <option value="{{x.streamcode}}" *ngFor="let x of selected_program_name"> {{x.stream}} </option>
+                       </select>
+                    </div>
+                    <div *ngIf="registerform.controls['quali'].invalid && registerform.controls['quali'].touched" class="text-danger text-center mt-2 ">
+                       <div *ngIf="registerform.controls['quali'].errors">
+                          <small>Select Studying</small> 
+                       </div>
+                    </div>
+                 </div>
+                 <div class="col-12">
+                    <div class="form-group">
+                       <label for="stdgroup"> Exams Preparing for <span class="text-danger font-weight-bold">*</span></label> 
+                       <ng-select 
+                       [items]="selection_on_quali" 
+                       bindLabel="label"
+                       placeholder="You can Select Multiple Exams"
+                       appendTo="body"
+                       [multiple]="true" id="stdgroup" name="stdgroup" formControlName="stdgroup" required>
+                       </ng-select> 
+                    </div>
+                    <div *ngIf="registerform.controls['stdgroup'].invalid && registerform.controls['stdgroup'].touched" class="text-danger text-center mt-2 ">
+                       <div *ngIf="registerform.controls['stdgroup'].errors">
+                          <small>Select Exam</small> 
+                       </div>
+                    </div>
+                 </div>
+                 
+                 <div class="col-12">
+                    <div class="form-group">
+                       <label for="year"> Year <span class="text-danger font-weight-bold">*</span></label>
+                       <select id="year" tabindex="5" name="year" class="form-select" required autocomplete="off" (change)="get_std_about($event)" formControlName="year">
+                          <option value=""> Select </option>
+                          <!-- <option value="22-2023"> 2022-23 </option> -->
+                          <option value="23-24"> 2023-24 </option>
+                          <option value="24-25"> 2024-25 </option>
+                          <option value="25-26"> 2025-26 </option>
+                       </select>
+                    </div>
+                    <div *ngIf="registerform.controls['year'].invalid && registerform.controls['year'].touched" class="text-danger text-center mt-2 ">
+                       <div *ngIf="registerform.controls['year'].errors">
+                          <small>Select Year</small> 
+                       </div>
+                    </div>
+                 </div>
+                
+                 
+                <div class="col-12">
+                   <h4 class="text-danger text-center font-weight-bold" *ngIf="show_group_error!=''"> {{show_group_error}} </h4>
+                   <h4 class="text-danger text-center font-weight-bold" *ngIf="show_reg_error!=''"> {{show_reg_error}} </h4>
+                   <div class="text-center">
+                      <button type="submit" id="joinbtnjs" class="btn btn-primary rounded-pill-OFF shadow btn-block   w-100" [disabled]="!joinbtnjs">Update</button><br> 
+                     
+                   </div>
+                </div>
+             </div>
+             </form>  
+          </div>
+       </div>
+    </div>
+  </main>

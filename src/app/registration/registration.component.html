@@ -1,0 +1,117 @@
+<main class="body">
+  <div class="container mh-100">
+     <div class="row g-0 bg-white rounded-4 shadow-lg align-content-center mh-100">
+        <div class="col-xl-6 order-xl-first order-last  col-md-12 text-right mh-100 d-sm-none d-md-block d-none d-sm-block">
+           <aside class="ms-auto h-100 rounded-start-4 mobile-rounded  gr  p-lg-cstm text-center vcenter-hcenter">
+              <img src="assets/img/studybanner.png" class="whiteStoke rounded-4 shadow-lg" alt=""/> 
+           </aside>
+        </div>
+        <div class="col-xl-6  col-md-12 align-self-center" *ngIf="register_success==0" >
+           <form class="regoform px-lg-5 py-lg-5 p-3" [formGroup]="registerform" (keydown.enter)="onSubmit()"
+(ngSubmit)="onSubmit()" novalidate> 
+
+           <div class="loginCntHeader text-center  py-2 mb-5 rounded-3">
+              <img src="assets/img/logo.png" class="logo">
+           </div>
+           <h3 class="text-left mb-3"><strong>Create New Account</strong></h3>
+           <div class="row g-4">
+              <div class="col-md-12">
+                 <div class="form-group">
+                    <label for="name">Name<span class="text-danger ">*</span></label>
+                    <input type="text" id="name" name="name" class="form-control" required autocomplete="off" formControlName="name" minlength="3" placeholder="Enter Student Name" onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || event.charCode == 32">
+                 </div>
+                 <div *ngIf="registerform.controls['name'].invalid && registerform.controls['name'].touched" class="text-danger text-center mt-2 ">
+                    <div *ngIf="registerform.controls['name'].errors">
+                       <small>Enter Name of Minimum length 3</small> 
+                    </div>
+                 </div>
+              </div>
+              <div class="col-md-6">
+                 <div class="form-group">
+                    <label for="mobile">Phone Number<span class="text-danger ">*</span></label>
+                    <input type="text" id="mobile" name="mobile" placeholder="Enter 10 digit mobile no" class="form-control" maxlength="10" minlength="10" required autocomplete="off" formControlName="mobile" onkeypress="return event.charCode>47 && event.charCode<58" (keydown)="getSUC($event)"> 
+                 </div>
+                 <div *ngIf="registerform.controls['mobile'].invalid && registerform.controls['mobile'].touched" class="text-danger text-center mt-2 ">
+                    <div *ngIf="registerform.controls['mobile'].errors">
+                       <small>Enter Phone Number of Minimum length 10</small> 
+                    </div>
+                 </div>
+              </div>
+              <div class="col-md-6">
+                 <div class="form-group">
+                    <label for="emailid">Email</label>
+                    <input type="email" id="emailid" name="emailid" class="form-control" autocomplete="off" formControlName="emailid" placeholder="Enter Email (optional)" (keydown)="emailvalidation($event)">
+                    <span id="error" style="display:none;color:red;">Wrong email</span>
+                 </div>
+              </div>
+              
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label for="about">How do you know about ABHYAS<span class="text-danger ">*</span></label>
+                     <select id="about" name="about" tabindex="6" class="form-control" required autocomplete="off" formControlName="about" (change)="get_std_about($event)" >
+                        <option value=""> Select </option>
+                        <option value="Aditya"> Aditya Educational Institutions </option>
+                        <option value="Edignite"> Edignite Platform</option>
+                        <option value="FriendReffereal"> Friend Reffered </option>
+                        <option value="Youtube"> Youtube </option>
+                        <option value="SocialMedia"> Social Media </option>
+                     </select>
+                  </div>
+                  <div *ngIf="registerform.controls['about'].invalid && registerform.controls['about'].touched" class="text-danger text-center mt-2 ">
+                     <div *ngIf="registerform.controls['about'].errors">
+                        <small>Select About</small> 
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-12" *ngIf="show_suc==2">
+                  <div class="row">
+                     <div class="col-md-6" [formGroup]="suc_form">
+                        <div class="form-group">
+                        <label for="stdSuc" class="d-block"> Student SUC Code<span class="text-danger ">*</span> </label>
+                        <div class="input-group">
+                           <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" id="stdSuc" required autocomplete="off" maxlength="10" formControlName="stdSuc" onkeypress="return event.charCode>47 && event.charCode<58" (keyup)="getSUC($event)" style="border-right-width: 0;">
+                           <span class="input-group-text" id="basic-addon2" style="background: transparent;">
+                              <i class="fa fa-check text-success" *ngIf="stdsucdata==1"></i>
+                              <i class="fa fa-times text-danger" *ngIf="stdsucdata==2 && show_suc_msg!=''"></i>
+                           </span>
+                         </div>
+                        </div>
+                        <!-- <div class="form-group">
+                           <label for="stdSuc"> Student SUC Code<span class="text-danger ">*</span> </label>
+                           <input type="text" id="stdSuc" class="form-control" required autocomplete="off" maxlength="10" formControlName="stdSuc" onkeypress="return event.charCode>47 && event.charCode<58" (keyup)="getSUC($event)" >
+                        </div> -->
+                        <label for="stdSuc" class="text-danger text-center" *ngIf="show_suc_error!=''"> {{show_suc_error}} </label>
+                        <label for="stdSuc" class="text-danger text-center " *ngIf="show_suc_msg!=''"> {{show_suc_msg}} </label>
+                     </div>
+                     <!-- <div class="col-md-2 mt-2">
+                        <i class="fa fa-check text-success" *ngIf="stdsucdata==1"></i>
+                        <i class="fa fa-times text-danger" *ngIf="stdsucdata==2 && show_suc_msg!=''"></i>
+                     </div> -->
+                  </div>
+               </div>
+              <div class="col-md-12">
+                 <h4 class="text-danger text-center " *ngIf="show_group_error!=''"> {{show_group_error}} </h4>
+                 <h4 class="text-danger text-center " *ngIf="show_reg_error!=''"> {{show_reg_error}} </h4>
+                 <div class="text-center">
+                    <button type="submit" id="joinbtnjs" class="btn btn-primary rounded-pill-OFF shadow btn-block   w-100" [disabled]="!joinbtnjs">Submit</button><br> 
+                    <a href="#/login"  style="font-size: 14px; color: inherit!important;   cursor: pointer; text-align: center;" class="mt-4 d-block text-dark">I already have an account</a>
+                 </div>
+              </div>
+           </div>
+           </form>  
+        </div>
+        <div class="col-xl-6  col-md-12 align-self-center" *ngIf="register_success==1" > 
+            <div class=" error-404-off" style=" height: 80vh; display: flex; align-items: center; justify-content: center;flex-direction: column;">
+               <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+               <h2 class="text-center card-title"> You have successfully registered for 
+                  <div class="">
+                  ABHYAS. 
+                  </div>
+            </h2> 
+            <p class="text-danger p-3 text-center">Login credientials are sent to your registered mobile.  </p>
+            <a class="btn btn-primary mt-3" href="#/login">Click here to Login </a>
+         </div>
+        </div>
+     </div>
+  </div>
+</main>

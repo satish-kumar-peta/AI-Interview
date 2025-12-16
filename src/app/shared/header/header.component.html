@@ -1,0 +1,76 @@
+<header id="header" class="header fixed-top d-flex align-items-center">
+
+  <div class="d-flex align-items-center justify-content-between">
+    <a href="#/admin/dashboard" class="logo d-flex align-items-center">
+      <div class="text-center align-items-center">
+        <img src="assets/img/logo.png" alt="" class="d-block d-lg-none">
+        <img src="assets/img/logo.png" alt="" class="d-none d-lg-block">
+
+      </div>
+
+    </a>
+
+    <i class="bi bi-list toggle-sidebar-btn d-xl-block d-none" (click)="menuchange()"></i>
+
+  </div>
+
+  <div class="search-bar">
+    <!-- <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form> -->
+  </div><!-- End Search Bar -->
+
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center gap-2">
+
+      <li class="nav-item dropdown pe-3">
+        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+
+          <div class="position-relative">
+            <img *ngIf="logininfo.stdAbout!='Aditya'" src="assets/img/profile.jpg" alt="avatar"
+              class="profile-pic rounded">
+            <img *ngIf="logininfo.stdAbout=='Aditya'"
+              src="https://analysis.aditya.ac.in/uploads/student_photos/{{logininfo.stdPhoto}}" alt="avatar"
+              class="profile-pic rounded" (error)="img.src = errorimg" #img>
+          </div>
+          <!-- <i class="ri-user-fill dp-pic"></i> -->
+          <!-- &nbsp; {{logininfo.stdName}} -->
+          <!-- <img src="{{gmailPhoto}}"  class="rounded-circle"> -->
+
+          <span class="d-none d-md-block dropdown-toggle ps-2"></span>
+        </a><!-- End Profile Iamge Icon -->
+
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <li class="dropdown-header">
+            <h6 class="text-start">{{logininfo.stdName}}</h6>
+            <div class="text-start"><small>{{logininfo.stdEmail}}</small></div>
+            <div class="text-muted text-start text-start  "><small
+                style="font-size: 11px;">{{logininfo.stdMobileNo}}</small></div>
+          </li>
+         
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center justify-content-center" href="" (click)="logout()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>
+          </li>
+
+        </ul>
+      </li><!-- End Profile Nav -->
+    </ul>
+  </nav><!-- End Icons Navigation -->
+
+</header>
+<footer class="footer-menu d-xl-none">
+  <a href="#/admin/dashboard"
+    [ngClass]="selectmobilemenu==0?'d-flex align-items-center flex-column g-1 menu_active':'d-flex align-items-center flex-column g-1'"
+    (click)="gotomenu(0)">
+    <i class="ri-dashboard-line"></i><span>Dashboard</span>
+  </a>
+
+</footer>

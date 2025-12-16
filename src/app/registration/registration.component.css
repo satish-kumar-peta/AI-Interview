@@ -1,0 +1,175 @@
+.body {
+    background:#F5F5F5;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 16px;
+        padding: 20px;
+        align-items: center;
+        min-height: 100vh!important;
+        color: #444444!important;
+        font-weight: 400!important;
+    }
+    label {
+        margin-bottom: 8px!important;
+    }
+    .rounded-start-4 {
+   
+        border-bottom-left-radius:1rem!important;
+border-top-left-radius:1rem!important;
+    }
+    html, body {
+        min-height: 100vh!important;
+    }
+    .RightBlock {
+        min-height: 450px;
+    }
+    .logo {
+        width: 130px;
+    }
+    .loginBlk {
+        width: 260px;
+        margin: 0 auto;
+        text-align: left;
+    }
+    .footer-logo {
+            width: 120px;
+        margin-top: 20px;
+    }
+    .gr {
+        background-image: linear-gradient(to right bottom, #2f3279, #343b99, #3944ba, #3e4ddc, #4356ff);
+    }
+    .whiteStoke {
+        border: 10px #fff solid;
+        width: 100%;
+    }
+    .vcenter-hcenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    @media(min-width:992px) {
+        .p-lg-cstm {
+            padding: 30px!important;
+        }
+    }
+    @media(max-width:991px) {
+        .p-lg-cstm {
+            padding: 0.8rem!important;
+        }
+    }
+    @media(max-width:767px) {
+        .mobile-rounded {
+            border-radius: 16px!important;
+        }
+        .whiteStoke {
+        width: 100%;
+    }
+    }
+
+/* svg tick */
+    .sign-in-google {
+        width: 220px;
+        background: #06c;
+        border-radius: 4px;
+        color: #fff;
+        text-align: center;
+        padding: 4px;
+    }
+    .text_google {
+        position: absolute;
+        z-index: 1;
+        padding: 2px;
+        top: 50%;
+        left: 62px;
+        transform: translateY(-50%);
+    }
+
+    .google-btn {
+        width: 184px;
+        height: 42px;
+        background-color: #4285f4;
+        border-radius: 2px;
+        box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.25);
+      }
+      .google-btn .google-icon-wrapper {
+        position: absolute;
+        margin-top: 1px;
+        margin-left: 1px;
+        width: 40px;
+        height: 40px;
+        border-radius: 2px;
+        background-color: #fff;
+      }
+      .google-btn .google-icon {
+        position: absolute;
+        margin-top: 11px;
+        margin-left: 11px;
+        width: 18px;
+        height: 18px;
+      }
+      .google-btn .btn-text {
+        float: right;
+        margin: 11px 11px 0 0;
+        color: #fff;
+        font-size: 14px;
+        letter-spacing: 0.2px;
+        font-family: "Roboto";
+      }
+      .google-btn:hover {
+        box-shadow: 0 0 6px #4285f4;
+      }
+      .google-btn:active {
+        background: #1669F2;
+      }
+
+
+      .checkmark__circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 2;
+        stroke-miterlimit: 10;
+        stroke: green;
+        fill: none;
+        animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+      }
+      
+      .checkmark {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 2;
+        stroke: green;
+        stroke-miterlimit: 10;
+        margin: 10% auto;
+        box-shadow: inset 0px 0px 0px #7ac142;
+        animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+      }
+      
+      .checkmark__check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+      }
+      
+      @keyframes stroke {
+        100% {
+          stroke-dashoffset: 0;
+        }
+      }
+      @keyframes scale {
+        0%, 100% {
+          transform: none;
+        }
+        50% {
+          transform: scale3d(1.1, 1.1, 1);
+        }
+      }
+      @keyframes fill {
+        100% {
+          box-shadow: inset 0px 0px 0px 30px #fff;
+        }
+      }
