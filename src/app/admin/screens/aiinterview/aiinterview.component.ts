@@ -1,10 +1,6 @@
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  OnDestroy,
-  NgZone
-} from '@angular/core';
+
+
+import { Component, OnInit, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
 import { interviewService } from 'src/app/core/services/aiinterview.service';
 import { interviewaudio } from 'src/environments/environment.development';
 import { Router } from '@angular/router';
@@ -14,14 +10,12 @@ import { Router } from '@angular/router';
   templateUrl: './aiinterview.component.html',
   styleUrls: ['./aiinterview.component.css']
 })
-export class AiinterviewComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /* ---------------- DATA ---------------- */
   questions: any[] = [];
   currentIndex = 0;
   currentQuestion: any;
-
   Audiourl = '';
 
   /* ---------------- FLAGS ---------------- */
@@ -33,9 +27,8 @@ export class AiinterviewComponent
   /* ---------------- SPEECH ---------------- */
   recognition: any;
   recognitionActive = false;
-
   studentSpeech = '';
-  finalTranscript = ''; // ✅ FIX
+  finalTranscript = '';
 
   /* ---------------- SILENCE ---------------- */
   lastSpeechTime = 0;
@@ -58,7 +51,7 @@ export class AiinterviewComponent
     private router: Router,
     private _interviewService: interviewService,
     private zone: NgZone
-  ) {}
+  ) { }
 
   /* ================= INIT ================= */
 
@@ -74,24 +67,22 @@ export class AiinterviewComponent
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.audioCanvas = this.makeVisualizer('audioCanvas');
-      this.micCanvas = this.makeVisualizer('micCanvas');
+    this.audioCanvas = this.makeVisualizer('audioCanvas');
+    this.micCanvas = this.makeVisualizer('micCanvas');
 
-      this.startMic();
-      this.initSpeechRecognition();
-    }, 100);
+    this.startMic();
+    this.initSpeechRecognition();
+    this.startSpeechRecognition(); 
   }
 
   ngOnDestroy(): void {
     this.stopSpeechRecognition();
+    this.stopSilenceWatcher();
 
     this.micStream?.getTracks().forEach((t: any) => t.stop());
     this.micContext?.close();
     this.audioContext?.close();
   }
-
-  /* ================= INTERVIEW FLOW ================= */
 
   startInterview() {
     if (!this.questions.length || this.isFirstPlayDone) return;
@@ -118,24 +109,28 @@ export class AiinterviewComponent
 
   playQuestionAudio() {
     this.stopSilenceWatcher();
-    this.stopSpeechRecognition();
-
+    this.stopSpeechRecognition(); 
     this.isInterviewerSpeaking = true;
     this.isPlayingAudio = true;
 
-    // ✅ RESET TRANSCRIPTS
     this.finalTranscript = '';
     this.studentSpeech = '';
+
+    if (!this.audioContext)
+      this.audioContext = new AudioContext();
+
+    if (this.audioContext.state === 'suspended')
+      this.audioContext.resume();
 
     const audio = new Audio(this.Audiourl);
     audio.crossOrigin = 'anonymous';
 
-    const src = this.audioContext!.createMediaElementSource(audio);
-    const analyser = this.audioContext!.createAnalyser();
+    const src = this.audioContext.createMediaElementSource(audio);
+    const analyser = this.audioContext.createAnalyser();
     analyser.fftSize = 256;
 
     src.connect(analyser);
-    analyser.connect(this.audioContext!.destination);
+    analyser.connect(this.audioContext.destination);
 
     this.drawVisualizer(this.audioCanvas.ctx, analyser);
 
@@ -153,53 +148,58 @@ export class AiinterviewComponent
     };
   }
 
-  /* ================= SPEECH ================= */
+  /* ================= SPEECH - OPTIMIZED FOR FAST SPEECH ================= */
 
   initSpeechRecognition() {
     const Speech =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
 
-    if (!Speech) return;
+    if (!Speech) {
+      console.error('Speech recognition not supported');
+      return;
+    }
 
     this.recognition = new Speech();
     this.recognition.lang = 'en-US';
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
-    this.recognition.maxAlternatives = 1;
-
-    // 🔥 FIXED LOGIC
+    this.recognition.maxAlternatives = 3; 
     this.recognition.onresult = (event: any) => {
-      if (this.isInterviewerSpeaking) return;
+      
+      if (this.isInterviewerSpeaking || this.isPlayingAudio) return;
 
       this.zone.run(() => {
-        let interimTranscript = '';
+        let completeText = '';
 
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const text = event.results[i][0].transcript;
-
-          if (event.results[i].isFinal) {
-            this.finalTranscript += text + ' ';
-          } else {
-            interimTranscript += text;
+        for (let i = 0; i < event.results.length; i++) {
+          completeText += event.results[i][0].transcript;
+          if (i < event.results.length - 1) {
+            completeText += ' ';
           }
         }
 
-        // ✅ ONLY FINAL + CURRENT INTERIM
-        this.studentSpeech =
-          (this.finalTranscript + interimTranscript).trim();
-
-        this.lastSpeechTime = Date.now();
+        if (completeText.trim()) {
+          this.studentSpeech = completeText.trim();
+          this.lastSpeechTime = Date.now();
+        }
       });
     };
 
     this.recognition.onend = () => {
-      if (this.recognitionActive && !this.isInterviewerSpeaking) {
-        setTimeout(() => {
-          try {
-            this.recognition.start();
-          } catch {}
-        }, 200);
+      this.recognitionActive = false;
+
+      if (!this.isInterviewerSpeaking && !this.isPlayingAudio) {
+        this.startSpeechRecognition();
+      }
+    };
+
+    this.recognition.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        console.error('Microphone permission denied');
+        this.recognitionActive = false;
       }
     };
   }
@@ -210,29 +210,38 @@ export class AiinterviewComponent
     try {
       this.recognition.start();
       this.recognitionActive = true;
-    } catch {}
+    } catch (e) {
+      if (e instanceof Error && e.message.includes('already started')) {
+        this.recognitionActive = true;
+      }
+    }
   }
 
   stopSpeechRecognition() {
+    if (!this.recognition || !this.recognitionActive) return;
+
     try {
       this.recognition.stop();
       this.recognitionActive = false;
-    } catch {}
+    } catch (e) {
+      console.error('Error stopping recognition:', e);
+    }
   }
 
-  /* ================= SILENCE ================= */
+  /* ================= SILENCE DETECTION ================= */
 
   startSilenceWatcher() {
+    this.stopSilenceWatcher();
     this.lastSpeechTime = Date.now();
 
     this.silenceWatcher = setInterval(() => {
-      const diff = Date.now() - this.lastSpeechTime;
+      const silenceDuration = Date.now() - this.lastSpeechTime;
 
-      if (diff >= this.SILENCE_LIMIT) {
+      if (silenceDuration >= this.SILENCE_LIMIT) {
         this.stopSilenceWatcher();
         this.goToNextQuestion();
       }
-    }, 500);
+    }, 100);
   }
 
   stopSilenceWatcher() {
@@ -278,20 +287,30 @@ export class AiinterviewComponent
     }
   }
 
-  /* ================= FINISH ================= */
-
   finishInterview() {
     this.stopSpeechRecognition();
+    this.stopSilenceWatcher();
+
+    const elements = [
+      'studentSection',
+      'startAudioBtn',
+      'studentSpeechText'
+    ];
+
+    elements.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    const done = document.getElementById('studentComplete');
+    if (done) done.style.display = 'block';
 
     this.micStream?.getTracks().forEach((t: any) => t.stop());
     this.micContext?.close();
     this.audioContext?.close();
-
-    const done = document.getElementById('studentComplete');
-    if (done) done.style.display = 'block';
   }
 
-  /* ================= VISUALIZER ================= */
+  /* ================= VISUALIZERS ================= */
 
   makeVisualizer(id: string) {
     const canvas: any = document.getElementById(id);
