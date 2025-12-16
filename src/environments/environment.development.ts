@@ -8,4 +8,6 @@ export const touchstoneApi = 'https://touchstone.aditya.ac.in';
 export const qimagepath = 'https://touchstone.aditya.ac.in'
 
 export const intewrviewapi = 'http://10.70.9.54:8003';
+// export const intewrviewapi = 'https://3pmckcmp-8003.usw3.devtunnels.ms';
+
 export const interviewaudio = 'http://10.60.1.99:5003';
