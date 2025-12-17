@@ -15,6 +15,7 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
   currentIndex = 0;
   currentQuestion: any;
   Audiourl = '';
+  public loginfo: any = [];
 
   /* ---------------- FLAGS ---------------- */
   isInterviewerSpeaking = false;
@@ -54,7 +55,10 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
   /* ================= INIT ================= */
 
   ngOnInit(): void {
+    this.loginfo = localStorage.getItem('logindata');
+    this.loginfo = JSON.parse(this.loginfo);
     this._interviewService.getAiInterviewData().subscribe({
+
       next: (res) => {
         this.questions = res?.data?.data?.questions || [];
         this.currentIndex = 0;
@@ -70,7 +74,7 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.startMic();
     this.initSpeechRecognition();
-    this.startSpeechRecognition(); 
+    this.startSpeechRecognition();
   }
 
   ngOnDestroy(): void {
@@ -107,7 +111,7 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   playQuestionAudio() {
     this.stopSilenceWatcher();
-    this.stopSpeechRecognition(); 
+    this.stopSpeechRecognition();
     this.isInterviewerSpeaking = true;
     this.isPlayingAudio = true;
 
@@ -162,9 +166,9 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.recognition.lang = 'en-US';
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
-    this.recognition.maxAlternatives = 3; 
+    this.recognition.maxAlternatives = 3;
     this.recognition.onresult = (event: any) => {
-      
+
       if (this.isInterviewerSpeaking || this.isPlayingAudio) return;
 
       this.zone.run(() => {
