@@ -1,4 +1,4 @@
-
+// with filler Audios 
 
 import { Component, OnInit, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
 import { interviewService } from 'src/app/core/services/aiinterview.service';
@@ -10,40 +10,46 @@ import { Router } from '@angular/router';
   templateUrl: './aiinterview.component.html',
   styleUrls: ['./aiinterview.component.css']
 })
+
 export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  /* ---------------- DATA ---------------- */
   questions: any[] = [];
   currentIndex = 0;
   currentQuestion: any;
   Audiourl = '';
   public loginfo: any = [];
 
-  /* ---------------- FLAGS ---------------- */
+  // Filler audio paths
+  fillerAudios: string[] = [
+    `${interviewaudio}/app/Assets/AI-Interview/Noise/1.mp3`,
+    `${interviewaudio}/app/Assets/AI-Interview/Noise/2.mp3`,
+    `${interviewaudio}/app/Assets/AI-Interview/Noise/3.mp3`,
+    `${interviewaudio}/app/Assets/AI-Interview/Noise/4.mp3`,
+    `${interviewaudio}/app/Assets/AI-Interview/Noise/5.mp3`
+  ];
+
   isInterviewerSpeaking = false;
   isPlayingAudio = false;
   isFirstPlayDone = false;
   questionAudioCompleted = false;
 
-  /* ---------------- SPEECH ---------------- */
+
   recognition: any;
   recognitionActive = false;
   studentSpeech = '';
   finalTranscript = '';
+  hasStudentSpoken = false;
 
-  /* ---------------- SILENCE ---------------- */
+
   lastSpeechTime = 0;
   silenceWatcher: any;
   SILENCE_LIMIT = 5000;
 
-  /* ---------------- AUDIO ---------------- */
   audioContext: AudioContext | null = null;
 
-  /* ---------------- VISUALS ---------------- */
   audioCanvas: any;
   micCanvas: any;
 
-  /* ---------------- MIC ---------------- */
   micStream: any = null;
   micContext: AudioContext | null = null;
   micAnalyser: any = null;
@@ -53,8 +59,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     private _interviewService: interviewService,
     private zone: NgZone
   ) { }
-
-  /* ================= INIT ================= */
 
   ngOnInit(): void {
     this.loginfo = localStorage.getItem('logindata');
@@ -118,6 +122,7 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isPlayingAudio = true;
     this.finalTranscript = '';
     this.studentSpeech = '';
+    this.hasStudentSpoken = false;
 
     if (!this.audioContext)
       this.audioContext = new AudioContext();
@@ -151,7 +156,46 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
-  /* ================= SPEECH - OPTIMIZED FOR FAST SPEECH ================= */
+  playFillerAudio() {
+    this.stopSilenceWatcher();
+    this.stopSpeechRecognition();
+    this.isInterviewerSpeaking = true;
+    this.isPlayingAudio = true;
+
+    if (!this.audioContext)
+      this.audioContext = new AudioContext();
+
+    if (this.audioContext.state === 'suspended')
+      this.audioContext.resume();
+
+    // Select random filler audio
+    const randomIndex = Math.floor(Math.random() * this.fillerAudios.length);
+    const fillerUrl = this.fillerAudios[randomIndex];
+
+    const audio = new Audio(fillerUrl);
+    audio.crossOrigin = 'anonymous';
+
+    const src = this.audioContext.createMediaElementSource(audio);
+    const analyser = this.audioContext.createAnalyser();
+    analyser.fftSize = 256;
+
+    src.connect(analyser);
+    analyser.connect(this.audioContext.destination);
+
+    this.drawVisualizer(this.audioCanvas.ctx, analyser);
+
+    audio.play();
+
+    audio.onended = () => {
+      this.zone.run(() => {
+        this.isInterviewerSpeaking = false;
+        this.isPlayingAudio = false;
+
+        // After filler audio, proceed to next question
+        this.proceedToNextQuestion();
+      });
+    };
+  }
 
   initSpeechRecognition() {
     const Speech =
@@ -185,6 +229,7 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
         if (completeText.trim()) {
           this.studentSpeech = completeText.trim();
           this.lastSpeechTime = Date.now();
+          this.hasStudentSpoken = true;
         }
       });
     };
@@ -231,8 +276,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /* ================= SILENCE DETECTION ================= */
-
   startSilenceWatcher() {
     this.stopSilenceWatcher();
     this.lastSpeechTime = Date.now();
@@ -260,12 +303,20 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
+    // If student spoke, go directly to next question
+    // If student didn't speak, play filler audio first
+    if (this.hasStudentSpoken) {
+      this.proceedToNextQuestion();
+    } else {
+      this.playFillerAudio();
+    }
+  }
+
+  proceedToNextQuestion() {
     this.currentIndex++;
     this.loadQuestion();
     this.playQuestionAudio();
   }
-
-  /* ================= MIC ================= */
 
   async startMic() {
     try {
@@ -312,8 +363,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.micContext?.close();
     this.audioContext?.close();
   }
-
-  /* ================= VISUALIZERS ================= */
 
   makeVisualizer(id: string) {
     const canvas: any = document.getElementById(id);
