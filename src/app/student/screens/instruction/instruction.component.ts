@@ -10,7 +10,7 @@ export class InstructionComponent {
 
   constructor(private router: Router) { }
 
-  AIInterview() {
+  startInterview() {
     this.router.navigate(['/student/aiinterview']);
   }
 }
