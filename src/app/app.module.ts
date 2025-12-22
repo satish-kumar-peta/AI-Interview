@@ -21,6 +21,9 @@ import {DataTablesModule} from 'angular-datatables';
 import { RegistrationComponent } from './registration/registration.component';
 import { NgSelectModule } from "@ng-select/ng-select";
 import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
+import { StudentComponent } from './screens/student/student.component';
+import { AIInterviewComponent } from './src/app/student/screens/aiinterview/aiinterview.component';
+
 
 @NgModule({
   
@@ -29,6 +32,8 @@ import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.compone
     LoginComponent,
     RegistrationComponent,
     ForgetpasswordComponent,
+    StudentComponent,
+    AIInterviewComponent,
     
   ],
   imports: [
