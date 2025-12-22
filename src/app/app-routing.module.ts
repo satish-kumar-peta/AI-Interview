@@ -8,7 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { StudentModule } from './student/student.module'
 import { RegistrationComponent } from './registration/registration.component';
 import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
-
+import { AiinterviewComponent } from './student/screens/aiinterview/aiinterview.component';
 const routes: Routes = [
   {
     path:'',
@@ -25,6 +25,10 @@ const routes: Routes = [
   {
     path:'registration',
     component:RegistrationComponent
+  },
+  {
+    path:'aiinterview',
+    component:AiinterviewComponent,
   },
 {
     path:'student',
