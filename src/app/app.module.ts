@@ -35,6 +35,7 @@ import { AIInterviewComponent } from './src/app/student/screens/aiinterview/aiin
     StudentComponent,
     AIInterviewComponent,
     
+    
   ],
   imports: [
     HttpClientModule,
