@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BlankpageComponent } from './screens/blankpage/blankpage.component';
 import { DashboardComponent } from './screens/dashboard/dashboard.component';
 import { adminScreensComponent } from './screens/screens.component';
-import {AiinterviewComponent} from './screens/aiinterview/aiinterview.component';
+
 
 const routes: Routes = [
   {
@@ -22,10 +22,7 @@ const routes: Routes = [
         path:'blankpage',
         component: BlankpageComponent
       },
-      {
-        path:'aiinterview',
-        component: AiinterviewComponent
-      }
+   
     ]
   }
 ];

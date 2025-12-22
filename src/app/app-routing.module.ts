@@ -26,16 +26,12 @@ const routes: Routes = [
     path:'registration',
     component:RegistrationComponent
   },
-  {
+{
     path:'student',
     loadChildren: () => import('./student/student.module').then(module => module.StudentModule),
     canActivate : [AuthGuard]
   },
-  {
-    path:'admin',
-    loadChildren: () => import('./admin/admin.module').then(module => module.AdminModule),
-    canActivate : [AuthGuard]
-  }
+
 ];
 
 @NgModule({

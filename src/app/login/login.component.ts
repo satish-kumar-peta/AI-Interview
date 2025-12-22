@@ -75,7 +75,7 @@ export class LoginComponent {
                   localStorage.setItem('logindata',JSON.stringify(data.result[0]));
                   localStorage.setItem('stdQualification',data.result[0].stdQualification);
                   localStorage.setItem('studentprograms',JSON.stringify(data.result[0].stdCourse[0]));
-                  window.location.href='#/admin'  
+                  window.location.href='#/student' 
                 }
             })
 

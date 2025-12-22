@@ -7,7 +7,7 @@ import { adminScreensComponent } from './screens/screens.component';
 import { DashboardComponent } from './screens/dashboard/dashboard.component';
 import { SharedModule } from '../shared/shared.module';
 import { BlankpageComponent } from './screens/blankpage/blankpage.component';
-import { AiinterviewComponent } from './screens/aiinterview/aiinterview.component';
+
 
 
 @NgModule({
@@ -16,7 +16,7 @@ import { AiinterviewComponent } from './screens/aiinterview/aiinterview.componen
     adminScreensComponent,
     DashboardComponent,
     BlankpageComponent,
-    AiinterviewComponent
+
   ],
   imports: [
     CommonModule,

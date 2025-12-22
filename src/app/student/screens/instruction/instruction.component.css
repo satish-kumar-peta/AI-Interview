@@ -1,0 +1,97 @@
+/* ===== Main Layout ===== */
+.main {
+  background-color: #f6f7fb;
+  min-height: 100vh;
+}
+
+.section {
+  padding: 20px 0;
+}
+
+/* ===== Card ===== */
+.mainActionBlock {
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+}
+
+/* ===== Title Bar ===== */
+.titleBar {
+  padding-bottom: 10px;
+}
+
+.titleBar hr {
+  border-top: 2px solid #ff7a18;
+  width: 80px;
+  margin: 10px auto 0;
+}
+
+/* ===== Headings ===== */
+.card-title {
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.fs-3 {
+  letter-spacing: 0.5px;
+}
+
+/* ===== Icon & Header ===== */
+.top-title-icon {
+  color: #ff7a18;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.pipeIcons {
+  margin-left: 6px;
+}
+
+/* ===== Text ===== */
+aside p {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ===== Lists ===== */
+aside ul li,
+aside ol li {
+  color: #444;
+  font-size: 14px;
+}
+
+/* ===== Stats Pills ===== */
+
+
+
+
+/* ===== Footer ===== */
+
+
+/* ===== Button ===== */
+.btn-primary-light {
+  background: linear-gradient(135deg, #ff7a18, #ff9f1c);
+  color: #ffffff;
+  border-radius: 30px;
+  padding: 10px 24px;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-light:hover {
+  background: linear-gradient(135deg, #ff9f1c, #ff7a18);
+  transform: translateY(-2px);
+}
+
+/* ===== Responsive Fix ===== */
+@media (max-width: 768px) {
+  .mainActionBlock {
+    padding: 20px 10px;
+  }
+
+
+}

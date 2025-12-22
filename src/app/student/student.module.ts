@@ -12,6 +12,9 @@ import { MathJaxDirective } from '../directives/math-jax.directive';
 
 import { searchFilterPipe } from '../utilities/search-filter.pipe';  
 import { CapitalizePipe } from '../utilities/capitalize.pipe';
+import { InstructionComponent } from './screens/instruction/instruction.component';
+import { AiinterviewComponent } from './screens/aiinterview/aiinterview.component';
+
 
 @NgModule({
     declarations: [
@@ -21,6 +24,9 @@ import { CapitalizePipe } from '../utilities/capitalize.pipe';
         MathJaxDirective,
         searchFilterPipe,
         CapitalizePipe,
+        InstructionComponent,
+        AiinterviewComponent
+        
     
     ],
     imports: [

@@ -30,6 +30,7 @@ import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.compone
     RegistrationComponent,
     ForgetpasswordComponent,
     
+    
   ],
   imports: [
     HttpClientModule,

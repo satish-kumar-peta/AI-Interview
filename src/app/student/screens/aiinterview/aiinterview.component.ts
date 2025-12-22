@@ -116,7 +116,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stopSpeechRecognition();
     this.isInterviewerSpeaking = true;
     this.isPlayingAudio = true;
-
     this.finalTranscript = '';
     this.studentSpeech = '';
 
@@ -373,3 +372,4 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     loop();
   }
 }
+
