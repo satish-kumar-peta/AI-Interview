@@ -10,6 +10,14 @@ import { intewrviewapi } from 'src/environments/environment.development';
 })
 
 export class interviewService {
+
+  saveInterviewAnswers(data: any): Observable<any> {
+    return this._http.patch<any>(
+      `${intewrviewapi}/update-interview/2360530366`,
+      data
+    );
+  }
+
   constructor(private readonly _http: HttpClient, private readonly _router: Router) { }
 
 
@@ -22,5 +30,7 @@ export class interviewService {
   speechToText(data: FormData) {
     return this._http.post<any>('http://localhost:3000/stt', data);
   }
+
+
 
 }
