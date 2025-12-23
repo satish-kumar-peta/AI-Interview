@@ -19,7 +19,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
   Audiourl = '';
   public loginfo: any = [];
 
-  // Filler audio paths
   fillerAudios: string[] = [
     `${interviewaudio}/app/Assets/AI-Interview/Noise/1.mp3`,
     `${interviewaudio}/app/Assets/AI-Interview/Noise/2.mp3`,
@@ -32,7 +31,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
   isPlayingAudio = false;
   isFirstPlayDone = false;
   questionAudioCompleted = false;
-
 
   recognition: any;
   recognitionActive = false;
@@ -63,10 +61,16 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.loginfo = localStorage.getItem('logindata');
     this.loginfo = JSON.parse(this.loginfo);
-    this._interviewService.getAiInterviewData().subscribe({
 
+    this._interviewService.getAiInterviewData().subscribe({
       next: (res) => {
-        this.questions = res?.data?.data?.questions || [];
+        const apiData = res?.data?.data;
+
+        // ✅ flatten nested questions
+        this.questions = apiData?.interview_questions?.flat() || [];
+
+        console.log('ALL QUESTIONS:', this.questions);
+
         this.currentIndex = 0;
         this.currentQuestion = this.questions[0];
       },
@@ -109,10 +113,12 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadQuestion() {
     this.currentQuestion = this.questions[this.currentIndex];
-    const { category, id } = this.currentQuestion;
 
-    this.Audiourl =
-      `${interviewaudio}/app/Assets/AI-Interview/${category}/${id}.mp3`;
+    // 🔥 API already gives correct audio
+    this.Audiourl = this.currentQuestion.audio_url;
+
+    console.log('Playing Question:', this.currentQuestion.question);
+    console.log('Audio URL:', this.Audiourl);
   }
 
   playQuestionAudio() {
@@ -303,8 +309,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    // If student spoke, go directly to next question
-    // If student didn't speak, play filler audio first
     if (this.hasStudentSpoken) {
       this.proceedToNextQuestion();
     } else {

@@ -15,7 +15,8 @@ export class interviewService {
 
   getAiInterviewData(): Observable<any> {
     // return this._http.get<any>(`${intewrviewapi}/get-data/123456789`);
-    return this._http.get<any>(`${intewrviewapi}/get-data/987654321`);
+    // return this._http.get<any>(`${intewrviewapi}/get-data/987654321`);
+    return this._http.get<any>(`${intewrviewapi}/get-data/2360530366`);
   }
 
   speechToText(data: FormData) {
