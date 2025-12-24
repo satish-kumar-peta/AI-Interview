@@ -380,7 +380,7 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     const answers: any = {};
 
     this.questions.forEach((question, index) => {
-      const questionKey = `Q${index + 1}`;
+      const questionKey = `Q${index}`;
       answers[questionKey] = question.student_answer || '';
     });
 
