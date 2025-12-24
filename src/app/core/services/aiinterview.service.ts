@@ -11,9 +11,10 @@ import { intewrviewapi } from 'src/environments/environment.development';
 
 export class interviewService {
 
+
   saveInterviewAnswers(data: any): Observable<any> {
-    return this._http.patch<any>(
-      `${intewrviewapi}/update-interview/2360530366`,
+    return this._http.post<any>(
+      `${intewrviewapi}/interview/update-answers`,
       data
     );
   }

@@ -39,7 +39,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
   finalTranscript = '';
   hasStudentSpoken = false;
 
-
   lastSpeechTime = 0;
   silenceWatcher: any;
   SILENCE_LIMIT = 5000;
@@ -66,23 +65,12 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this._interviewService.getAiInterviewData().subscribe({
       next: (res) => {
+        this.interviewData = res.data.data;
 
-        //  FULL RESPONSE PAYLOAD
-        console.log('FULL API RESPONSE:', res);
+        this.questions = this.interviewData.interview_questions.flat();
 
-        //  ONLY DATA PAYLOAD
-        // console.log('PAYLOAD (res.data.data):', res?.data?.data);
-
-        // store response
-        this.interviewData = res?.data?.data;
-
-        // flatten questions
-        this.questions = this.interviewData?.interview_questions?.flat() || [];
-
-        // add student_answer field
         this.questions.forEach(q => q.student_answer = '');
 
-        // set first question
         this.currentIndex = 0;
         this.currentQuestion = this.questions[0];
 
@@ -130,7 +118,6 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
   loadQuestion() {
     this.currentQuestion = this.questions[this.currentIndex];
 
-    // 🔥 API already gives correct audio
     this.Audiourl = this.currentQuestion.audio_url;
 
     console.log('Playing Question:', this.currentQuestion.question);
@@ -324,8 +311,8 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.currentQuestion.student_answer =
       this.hasStudentSpoken ? this.studentSpeech.trim() : '';
+    console.log('Student answer:', this.currentQuestion.student_answer);
   }
-
 
   goToNextQuestion() {
     this.saveCurrentAnswer();
@@ -335,9 +322,14 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.proceedToNextQuestion();
+    // If student spoke, go directly to next question
+    // If student didn't speak, play filler audio first
+    if (this.hasStudentSpoken) {
+      this.proceedToNextQuestion();
+    } else {
+      this.playFillerAudio();
+    }
   }
-
 
   proceedToNextQuestion() {
     this.currentIndex++;
@@ -379,13 +371,34 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
 
 
-    this.saveCurrentAnswer(); // last question
+    this.saveCurrentAnswer();
 
-    // 🔥 SAME OBJECT, ONLY student_answer added
-    this._interviewService.saveInterviewAnswers(this.interviewData)
+    console.log('Final Interview Data:', this.interviewData);
+    console.log('All Questions with Answers:', this.questions);
+
+    // Format data for API
+    const answers: any = {};
+
+    this.questions.forEach((question, index) => {
+      const questionKey = `Q${index}`;
+      answers[questionKey] = question.student_answer || '';
+    });
+
+    const dataToSend = {
+      interview_id: this.interviewData._id,
+      answers: answers
+    };
+
+    console.log('Data sending to API:', dataToSend);
+
+    this._interviewService.saveInterviewAnswers(dataToSend)
       .subscribe({
-        next: () => console.log('Saved successfully'),
-        error: (err: any) => console.error(err)
+        next: (response) => {
+          console.log('Interview saved successfully:', response);
+        },
+        error: (err: any) => {
+          console.error('Error saving interview:', err);
+        }
       });
 
 
@@ -459,4 +472,3 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     loop();
   }
 }
-

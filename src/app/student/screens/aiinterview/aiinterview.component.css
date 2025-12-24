@@ -168,7 +168,8 @@ h3 {
   display: none;
   text-align: center;
   margin-top: 40px;
-  color: #ffffff;
+  /* color: #ffffff; */
+  color: lightgreen;
   font-size: 26px;
 }
 
