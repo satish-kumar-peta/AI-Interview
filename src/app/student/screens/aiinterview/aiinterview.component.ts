@@ -1,3 +1,6 @@
+
+// with filler Audios 
+
 import { Component, OnInit, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
 import { interviewService } from 'src/app/core/services/aiinterview.service';
 import { interviewaudio } from 'src/environments/environment.development';
@@ -56,9 +59,9 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
     private zone: NgZone
   ) { }
 
+
   ngOnInit(): void {
-    this.loginfo = localStorage.getItem('logindata');
-    this.loginfo = JSON.parse(this.loginfo);
+    this.loginfo = JSON.parse(localStorage.getItem('logindata') || '{}');
 
     this._interviewService.getAiInterviewData().subscribe({
       next: (res) => {
@@ -73,7 +76,9 @@ export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
         console.log('ALL QUESTIONS:', this.questions);
       },
-      error: (err) => console.error('Interview API error:', err)
+      error: (err) => {
+        console.error('Interview API error:', err);
+      }
     });
   }
 
