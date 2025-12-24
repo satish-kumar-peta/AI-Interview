@@ -1,12 +1,12 @@
-.ins_background{
-  background: radial-gradient(circle at center,
-      rgba(88, 110, 143, 1) 0%,
-      rgba(70, 90, 120, 1) 35%,
-      rgba(55, 70, 100, 1) 70%,
-      rgba(40, 55, 85, 1) 100%);
+.ins_background {
+    background: radial-gradient(circle at center,
+            rgba(88, 110, 143, 1) 0%,
+            rgba(70, 90, 120, 1) 35%,
+            rgba(55, 70, 100, 1) 70%,
+            rgba(40, 55, 85, 1) 100%);
 }
 
 
-.card-title{
+.card-title {
     color: #cad4e5 !important;
 }
