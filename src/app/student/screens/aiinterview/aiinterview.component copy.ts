@@ -1,366 +1,4 @@
-// without filler Audios 
-
-// import { Component, OnInit, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
-// import { interviewService } from 'src/app/core/services/aiinterview.service';
-// import { interviewaudio } from 'src/environments/environment.development';
-// import { Router } from '@angular/router';
-
-// @Component({
-//   selector: 'app-aiinterview',
-//   templateUrl: './aiinterview.component.html',
-//   styleUrls: ['./aiinterview.component.css']
-// })
-// export class AiinterviewComponent implements OnInit, AfterViewInit, OnDestroy {
-
-//   questions: any[] = [];
-//   currentIndex = 0;
-//   currentQuestion: any;
-//   Audiourl = '';
-//   public loginfo: any = [];
-
-
-//   isInterviewerSpeaking = false;
-//   isPlayingAudio = false;
-//   isFirstPlayDone = false;
-//   questionAudioCompleted = false;
-
-
-//   recognition: any;
-//   recognitionActive = false;
-//   studentSpeech = '';
-//   finalTranscript = '';
-
-
-//   lastSpeechTime = 0;
-//   silenceWatcher: any;
-//   SILENCE_LIMIT = 5000;
-
-//   audioContext: AudioContext | null = null;
-
-//   audioCanvas: any;
-//   micCanvas: any;
-
-//   micStream: any = null;
-//   micContext: AudioContext | null = null;
-//   micAnalyser: any = null;
-
-//   constructor(
-//     private router: Router,
-//     private _interviewService: interviewService,
-//     private zone: NgZone
-//   ) { }
-
-//   ngOnInit(): void {
-//     this.loginfo = localStorage.getItem('logindata');
-//     this.loginfo = JSON.parse(this.loginfo);
-//     this._interviewService.getAiInterviewData().subscribe({
-
-//       next: (res) => {
-//         this.questions = res?.data?.data?.questions || [];
-//         this.currentIndex = 0;
-//         this.currentQuestion = this.questions[0];
-//       },
-//       error: (err) => console.error('Interview API error:', err)
-//     });
-//   }
-
-//   ngAfterViewInit(): void {
-//     this.audioCanvas = this.makeVisualizer('audioCanvas');
-//     this.micCanvas = this.makeVisualizer('micCanvas');
-
-//     this.startMic();
-//     this.initSpeechRecognition();
-//     this.startSpeechRecognition();
-//   }
-
-//   ngOnDestroy(): void {
-//     this.stopSpeechRecognition();
-//     this.stopSilenceWatcher();
-
-//     this.micStream?.getTracks().forEach((t: any) => t.stop());
-//     this.micContext?.close();
-//     this.audioContext?.close();
-//   }
-
-//   startInterview() {
-//     if (!this.questions.length || this.isFirstPlayDone) return;
-
-//     this.isFirstPlayDone = true;
-
-//     if (!this.audioContext)
-//       this.audioContext = new AudioContext();
-
-//     if (this.audioContext.state === 'suspended')
-//       this.audioContext.resume();
-
-//     this.loadQuestion();
-//     this.playQuestionAudio();
-//   }
-
-//   loadQuestion() {
-//     this.currentQuestion = this.questions[this.currentIndex];
-//     const { category, id } = this.currentQuestion;
-
-//     this.Audiourl =
-//       `${interviewaudio}/app/Assets/AI-Interview/${category}/${id}.mp3`;
-//   }
-
-//   playQuestionAudio() {
-//     this.stopSilenceWatcher();
-//     this.stopSpeechRecognition();
-//     this.isInterviewerSpeaking = true;
-//     this.isPlayingAudio = true;
-
-//     this.finalTranscript = '';
-//     this.studentSpeech = '';
-
-//     if (!this.audioContext)
-//       this.audioContext = new AudioContext();
-
-//     if (this.audioContext.state === 'suspended')
-//       this.audioContext.resume();
-
-//     const audio = new Audio(this.Audiourl);
-//     audio.crossOrigin = 'anonymous';
-
-//     const src = this.audioContext.createMediaElementSource(audio);
-//     const analyser = this.audioContext.createAnalyser();
-//     analyser.fftSize = 256;
-
-//     src.connect(analyser);
-//     analyser.connect(this.audioContext.destination);
-
-//     this.drawVisualizer(this.audioCanvas.ctx, analyser);
-
-//     audio.play();
-
-//     audio.onended = () => {
-//       this.zone.run(() => {
-//         this.isInterviewerSpeaking = false;
-//         this.isPlayingAudio = false;
-//         this.questionAudioCompleted = true;
-
-//         this.startSpeechRecognition();
-//         this.startSilenceWatcher();
-//       });
-//     };
-//   }
-
-//   initSpeechRecognition() {
-//     const Speech =
-//       (window as any).SpeechRecognition ||
-//       (window as any).webkitSpeechRecognition;
-
-//     if (!Speech) {
-//       console.error('Speech recognition not supported');
-//       return;
-//     }
-
-//     this.recognition = new Speech();
-//     this.recognition.lang = 'en-US';
-//     this.recognition.continuous = true;
-//     this.recognition.interimResults = true;
-//     this.recognition.maxAlternatives = 3;
-//     this.recognition.onresult = (event: any) => {
-
-//       if (this.isInterviewerSpeaking || this.isPlayingAudio) return;
-
-//       this.zone.run(() => {
-//         let completeText = '';
-
-//         for (let i = 0; i < event.results.length; i++) {
-//           completeText += event.results[i][0].transcript;
-//           if (i < event.results.length - 1) {
-//             completeText += ' ';
-//           }
-//         }
-
-//         if (completeText.trim()) {
-//           this.studentSpeech = completeText.trim();
-//           this.lastSpeechTime = Date.now();
-//         }
-//       });
-//     };
-
-//     this.recognition.onend = () => {
-//       this.recognitionActive = false;
-
-//       if (!this.isInterviewerSpeaking && !this.isPlayingAudio) {
-//         this.startSpeechRecognition();
-//       }
-//     };
-
-//     this.recognition.onerror = (event: any) => {
-//       console.error('Speech recognition error:', event.error);
-
-//       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-//         console.error('Microphone permission denied');
-//         this.recognitionActive = false;
-//       }
-//     };
-//   }
-
-//   startSpeechRecognition() {
-//     if (!this.recognition || this.recognitionActive) return;
-
-//     try {
-//       this.recognition.start();
-//       this.recognitionActive = true;
-//     } catch (e) {
-//       if (e instanceof Error && e.message.includes('already started')) {
-//         this.recognitionActive = true;
-//       }
-//     }
-//   }
-
-//   stopSpeechRecognition() {
-//     if (!this.recognition || !this.recognitionActive) return;
-
-//     try {
-//       this.recognition.stop();
-//       this.recognitionActive = false;
-//     } catch (e) {
-//       console.error('Error stopping recognition:', e);
-//     }
-//   }
-
-//   startSilenceWatcher() {
-//     this.stopSilenceWatcher();
-//     this.lastSpeechTime = Date.now();
-
-//     this.silenceWatcher = setInterval(() => {
-//       const silenceDuration = Date.now() - this.lastSpeechTime;
-
-//       if (silenceDuration >= this.SILENCE_LIMIT) {
-//         this.stopSilenceWatcher();
-//         this.goToNextQuestion();
-//       }
-//     }, 100);
-//   }
-
-//   stopSilenceWatcher() {
-//     if (this.silenceWatcher) {
-//       clearInterval(this.silenceWatcher);
-//       this.silenceWatcher = null;
-//     }
-//   }
-
-//   goToNextQuestion() {
-//     if (this.currentIndex >= this.questions.length - 1) {
-//       this.finishInterview();
-//       return;
-//     }
-
-//     this.currentIndex++;
-//     this.loadQuestion();
-//     this.playQuestionAudio();
-//   }
-
-//   async startMic() {
-//     try {
-//       this.micStream = await navigator.mediaDevices.getUserMedia({
-//         audio: {
-//           echoCancellation: true,
-//           noiseSuppression: true,
-//           autoGainControl: true
-//         }
-//       });
-
-//       this.micContext = new AudioContext();
-//       const src = this.micContext.createMediaStreamSource(this.micStream);
-
-//       this.micAnalyser = this.micContext.createAnalyser();
-//       this.micAnalyser.fftSize = 256;
-
-//       src.connect(this.micAnalyser);
-//       this.drawVisualizer(this.micCanvas.ctx, this.micAnalyser);
-//     } catch (err) {
-//       console.error('Mic permission denied:', err);
-//     }
-//   }
-
-//   finishInterview() {
-//     this.stopSpeechRecognition();
-//     this.stopSilenceWatcher();
-
-//     const elements = [
-//       'studentSection',
-//       'startAudioBtn',
-//       'studentSpeechText'
-//     ];
-
-//     elements.forEach(id => {
-//       const el = document.getElementById(id);
-//       if (el) el.style.display = 'none';
-//     });
-
-//     const done = document.getElementById('studentComplete');
-//     if (done) done.style.display = 'block';
-
-//     this.micStream?.getTracks().forEach((t: any) => t.stop());
-//     this.micContext?.close();
-//     this.audioContext?.close();
-//   }
-
-//   makeVisualizer(id: string) {
-//     const canvas: any = document.getElementById(id);
-//     const ctx = canvas?.getContext('2d');
-
-//     const resize = () => {
-//       canvas.width = canvas.offsetWidth * devicePixelRatio;
-//       canvas.height = canvas.offsetHeight * devicePixelRatio;
-//       ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-//     };
-
-//     resize();
-//     window.addEventListener('resize', resize);
-
-//     return { canvas, ctx };
-//   }
-
-//   drawVisualizer(ctx: any, analyser: any) {
-//     if (!ctx || !analyser) return;
-
-//     const dataArray = new Uint8Array(64);
-
-//     const loop = () => {
-//       requestAnimationFrame(loop);
-//       analyser.getByteFrequencyData(dataArray);
-
-//       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-//       const cx = ctx.canvas.width / devicePixelRatio / 2;
-//       const cy = ctx.canvas.height / devicePixelRatio / 2;
-
-//       const inner = 60;
-//       const outer = 90;
-
-//       for (let i = 0; i < dataArray.length; i++) {
-//         const v = dataArray[i] / 255;
-//         const angle = (Math.PI * 2 * i) / dataArray.length;
-
-//         ctx.strokeStyle = `rgba(0,200,255,${0.4 + v * 0.6})`;
-//         ctx.lineWidth = 4;
-//         ctx.lineCap = 'round';
-
-//         ctx.beginPath();
-//         ctx.moveTo(
-//           cx + Math.cos(angle) * inner,
-//           cy + Math.sin(angle) * inner
-//         );
-//         ctx.lineTo(
-//           cx + Math.cos(angle) * (inner + v * (outer - inner)),
-//           cy + Math.sin(angle) * (inner + v * (outer - inner))
-//         );
-//         ctx.stroke();
-//       }
-//     };
-
-//     loop();
-//   }
-// }
-
-// // with filler Audios 
+// with filler Audios 
 
 // import { Component, OnInit, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
 // import { interviewService } from 'src/app/core/services/aiinterview.service';
@@ -788,7 +426,7 @@
 //   }
 // }
 
-// same code but answer kosam try chestunaaa
+// with filler audios and answer kuda correct gaa send avuthunay just hits ekuva padakundaa try chestunaaa
 
 // import { Component, OnInit, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
 // import { interviewService } from 'src/app/core/services/aiinterview.service';
@@ -828,7 +466,6 @@
 //   finalTranscript = '';
 //   hasStudentSpoken = false;
 
-
 //   lastSpeechTime = 0;
 //   silenceWatcher: any;
 //   SILENCE_LIMIT = 5000;
@@ -849,9 +486,9 @@
 //     private zone: NgZone
 //   ) { }
 
+
 //   ngOnInit(): void {
-//     this.loginfo = localStorage.getItem('logindata');
-//     this.loginfo = JSON.parse(this.loginfo);
+//     this.loginfo = JSON.parse(localStorage.getItem('logindata') || '{}');
 
 //     this._interviewService.getAiInterviewData().subscribe({
 //       next: (res) => {
@@ -866,7 +503,9 @@
 
 //         console.log('ALL QUESTIONS:', this.questions);
 //       },
-//       error: (err) => console.error('Interview API error:', err)
+//       error: (err) => {
+//         console.error('Interview API error:', err);
+//       }
 //     });
 //   }
 
@@ -1099,11 +738,8 @@
 
 //     this.currentQuestion.student_answer =
 //       this.hasStudentSpoken ? this.studentSpeech.trim() : '';
-
-//     console.log('Saved answer for question:', this.currentQuestion.question);
 //     console.log('Student answer:', this.currentQuestion.student_answer);
 //   }
-
 
 //   goToNextQuestion() {
 //     this.saveCurrentAnswer();
@@ -1121,7 +757,6 @@
 //       this.playFillerAudio();
 //     }
 //   }
-
 
 //   proceedToNextQuestion() {
 //     this.currentIndex++;
@@ -1168,33 +803,22 @@
 //     console.log('Final Interview Data:', this.interviewData);
 //     console.log('All Questions with Answers:', this.questions);
 
-//     // Format data for API using dot notation
-//     const formattedData: any = {};
+//     // Format data for API
+//     const answers: any = {};
 
 //     this.questions.forEach((question, index) => {
-//       // Find which array (category) this question belongs to
-//       let categoryIndex = 0;
-//       let questionIndex = 0;
-      
-//       let count = 0;
-//       for (let i = 0; i < this.interviewData.interview_questions.length; i++) {
-//         const categoryQuestions = this.interviewData.interview_questions[i];
-//         if (count + categoryQuestions.length > index) {
-//           categoryIndex = i;
-//           questionIndex = index - count;
-//           break;
-//         }
-//         count += categoryQuestions.length;
-//       }
-
-//       // Create dot notation key
-//       const key = `interview_questions.${categoryIndex}.${questionIndex}.student_answer`;
-//       formattedData[key] = question.student_answer || '';
+//       const questionKey = `Q${index}`;
+//       answers[questionKey] = question.student_answer || '';
 //     });
 
-//     console.log('Data sending to API (dot notation format):', formattedData);
+//     const dataToSend = {
+//       interview_id: this.interviewData._id,
+//       answers: answers
+//     };
 
-//     this._interviewService.saveInterviewAnswers(formattedData)
+//     console.log('Data sending to API:', dataToSend);
+
+//     this._interviewService.saveInterviewAnswers(dataToSend)
 //       .subscribe({
 //         next: (response) => {
 //           console.log('Interview saved successfully:', response);

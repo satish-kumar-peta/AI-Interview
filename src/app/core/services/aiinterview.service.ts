@@ -32,6 +32,4 @@ export class interviewService {
     return this._http.post<any>('http://localhost:3000/stt', data);
   }
 
-
-
 }
